@@ -1,0 +1,519 @@
+#include <LiquidCrystal.h>
+LiquidCrystal lcd(9,8, 5, 4, 3, 2);
+int counter;
+char A[] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',  '\0' }; 
+char ClassCh[] = "12nd CSE A#*22nd CSE B#*32nd CSE C#*43rd CSE A#*53rd CSE B#*63rd CSE C#*74th CSE A#*84th CSE B#*94th CSE C#\0 ";
+
+int  OneFourSeven=0,TwoFiveEight =0, ThreeSixNine=0,FourBut = 0, Zero = 0 ,but=0;
+ int buttonState = 0, classSelect =0,buttonDown = 0,buttonUp = 0,buttonTmp = 0, NewopLoop= 0, GetNumb=0;
+
+int clyes = 0,ClassArrayLoop = 0,ClassFinalCh=0,ClassFinal = 0, button_delay=1,r=0, NameCy = 0, NameArrayLoop = 0,GotNames = 0,PreFileCount = 0, NameCharCount=0,TotalNames = 0,CurrentName=0,PreNameCharCount = 0;int tmpCount = 0, Prefile=0,check = 0,checkme=0,buttonCheck=0,
+ClassCharCount=12,ClassArray = 0, InitClassCharCount = 12, TotalChar = 0,Ch = 1, TotalOp, tmpname=0, DataEntry = 0;  
+char Class[150], Data[200] ;
+
+void defChar (LiquidCrystal &thelcd, int asc, const unsigned char row[8])
+{
+  int i;
+  if ((asc < 0) || (asc > 7))
+  return;
+  thelcd.command (0x40 | (asc << 3));
+  for (i = 0; i < 8; i++)
+   thelcd.write (row[i]);
+  thelcd.home ();
+}
+const int UP_ARROW = 0x00;
+const int DOWN_ARROW = 0x01;
+
+void DrawUpArrow(){lcd.write (UP_ARROW);}
+void DrawDownArrow(){lcd.write (DOWN_ARROW);}
+
+void setup(){
+  lcd.begin(20, 4);
+  Serial.begin(2400);
+//2400 baud for the 434 model
+digitalWrite(10, HIGH);
+pinMode(10, OUTPUT);
+pinMode(A1, INPUT);
+pinMode(A0, INPUT);
+pinMode(A2, INPUT);
+pinMode(A3, INPUT);
+pinMode(A4, INPUT);
+
+
+counter = 0;
+static unsigned char up_arrow[8] = {0x04, 0x0E, 0x15, 0x04, 0x04, 0x04, 0x04, 0x00};
+static unsigned char down_arrow[8] = {0x00, 0x04, 0x04, 0x04, 0x04, 0x15, 0x0E, 0x04};
+defChar (lcd, UP_ARROW, up_arrow);
+defChar (lcd, DOWN_ARROW, down_arrow);
+
+
+
+}
+void loop(){
+//send out to transmitter
+ getClass();
+ 
+   if(ClassFinalCh)//after getting options..
+{
+ OneFourSeven = analogRead(0);
+  TwoFiveEight = analogRead(1);
+ThreeSixNine = analogRead(2);
+Zero = analogRead(3);
+FourBut = analogRead(4); 
+
+
+
+ 
+  
+if(OneFourSeven >100)
+{
+  
+ if(OneFourSeven > 230 && OneFourSeven < 280)
+     {
+       but = 1;
+      
+        Data[DataEntry] = '1'; 
+        if(NameCharCount % 2 == 0)
+        {
+          if(NameCharCount!=0)
+         lcd.print(',');lcd.print("1");
+        }
+        else
+        {
+        lcd.print("1");
+        }
+    
+DataEntry++;
+NameCharCount++;
+     }
+     else  if(OneFourSeven > 280 && OneFourSeven < 400)
+     {
+       but = 4;
+         Data[DataEntry] = '4';   
+ 
+    if(NameCharCount % 2 == 0)
+        {
+          if(NameCharCount!=0)
+         lcd.print(',');lcd.print("4");
+        }
+        else
+        {
+        lcd.print("4");
+        }
+      
+ DataEntry++;
+NameCharCount++;
+     }
+      else  if(OneFourSeven > 400 && OneFourSeven < 550)
+     {
+       but = 7;
+       
+  Data[DataEntry] = '7';   
+      if(NameCharCount % 2 == 0)
+        {
+          if(NameCharCount!=0)
+         lcd.print(',');lcd.print("7");
+        }
+        else
+        {
+        lcd.print("7");
+        }
+  
+  DataEntry++;    
+NameCharCount++;
+     }    
+
+ 
+ delay(250);
+  
+}
+if(TwoFiveEight>100)
+{
+ 
+  if(TwoFiveEight > 200 && TwoFiveEight < 300)
+     {
+       but = 2;
+       
+Data[DataEntry] = '2';  
+ if(NameCharCount % 2 == 0)
+        {
+          if(NameCharCount!=0)
+         lcd.print(',');lcd.print("2");
+        }
+        else
+        {
+        lcd.print("2");
+        }
+      
+DataEntry++;        
+NameCharCount++;
+     }
+     else  if(TwoFiveEight > 300 && TwoFiveEight< 400)
+     {
+       but = 5;
+       
+     Data[DataEntry] = '5'; 
+       if(NameCharCount % 2 == 0)
+        {
+          if(NameCharCount!=0)
+         lcd.print(',');lcd.print("5");
+        }
+        else
+        {
+        lcd.print("5");
+        }
+    
+ DataEntry++;       
+NameCharCount++;
+     }
+      else  if(TwoFiveEight > 480 && TwoFiveEight < 550)
+     {
+       but = 8;
+     Data[DataEntry] = '8'; 
+     if(NameCharCount % 2 == 0)
+        {
+          if(NameCharCount!=0)
+          {
+           
+         lcd.print(',');lcd.print("8");
+          }   
+      }
+        else
+        {
+        lcd.print("8");
+        }
+     
+DataEntry++;      
+NameCharCount++;
+       
+     }    
+ 
+ 
+delay(250);
+  
+}
+if(ThreeSixNine >100)
+{
+
+   if(ThreeSixNine > 200 && ThreeSixNine < 300)
+     {
+       but = 3;
+     
+    Data[DataEntry] = '3'; 
+    if(NameCharCount % 2 == 0)
+        {
+          if(NameCharCount!=0)
+         lcd.print(',');lcd.print("3");
+        }
+        else
+        {
+        lcd.print("3");
+        }
+      
+ DataEntry++;      
+NameCharCount++;
+     
+     }
+     else  if(ThreeSixNine> 300 && ThreeSixNine < 400)
+     {
+       but = 6;
+     Data[DataEntry] = '6'; 
+      if(NameCharCount % 2 == 0)
+        {
+          if(NameCharCount!=0)
+         lcd.print(',');lcd.print("6");
+        }
+        else
+        {
+        lcd.print("6");
+        }
+      
+ DataEntry++;      
+NameCharCount++;
+       
+     }
+      else  if(ThreeSixNine > 400 && ThreeSixNine < 550)
+     {
+       but = 9;
+     Data[DataEntry] = '9'; 
+     if(NameCharCount % 2 == 0)
+        {
+          if(NameCharCount!=0)
+         lcd.print(',');lcd.print("9");
+        }
+        else
+        {
+        lcd.print("9");
+        }
+      
+  DataEntry++;  
+NameCharCount++;
+      
+     } 
+
+ 
+
+ delay(250);
+  
+}
+if(FourBut >400)
+{
+  
+ if(FourBut > 400 && FourBut < 550)
+     {
+      int datacount = NameCharCount + 10, tmpct = 1;
+      
+      lcd.clear();
+        for(int k = 10; k <= datacount; k++)
+     { 
+       
+       if(tmpct % 2 == 0)
+        {
+         
+         lcd.write(Data[k]);lcd.print(",");
+       tmpct++;
+         
+        }
+        else
+        {
+        lcd.write(Data[k]);
+     tmpct++;
+        }
+       
+       
+     } 
+delay(250);
+NameCharCount--;
+     }
+}
+
+
+while(FourBut > 300 && FourBut < 400)
+     {
+     button_delay++;delay(100);FourBut = analogRead(4);if(button_delay > 10){lcd.clear();
+            int datacount = NameCharCount + 10, tmpct = 1;
+  lcd.setCursor(7, 0);
+      lcd.print("SENDING");
+      lcd.setCursor(4,3);
+      for(int i = 4; i < 16;i++)
+      {
+        lcd.print(".");
+        lcd.setCursor(i,3);
+        delay(100);
+      }
+     
+      for(int k = 0; k <= datacount; k++)
+     { 
+       
+       Serial.print(Data[k]);
+        }
+         Serial.print('x');
+   delay(250);
+       lcd.clear();
+       lcd.setCursor(5, 0);
+      lcd.print("DATA SENT");
+      delay(1000);
+      lcd.clear();
+       
+        OneFourSeven=0,TwoFiveEight =0, ThreeSixNine=0,FourBut = 0, Zero = 0 ,but=0,buttonState = 0, classSelect =0,buttonDown = 0,buttonUp = 0,buttonTmp = 0, NewopLoop= 0, GetNumb=0;
+clyes = 0,ClassArrayLoop = 0,ClassFinalCh=0,ClassFinal = 0, button_delay=1,r=0, NameCy = 0, NameArrayLoop = 0,GotNames = 0,PreFileCount = 0, NameCharCount=0,TotalNames = 0,CurrentName=0,PreNameCharCount = 0;int tmpCount = 0, Prefile=0,check = 0,checkme=0,buttonCheck=0,
+ClassCharCount=12,ClassArray = 0, InitClassCharCount = 12, TotalChar = 0,Ch = 1, TotalOp, tmpname=0, DataEntry = 0;     break; }
+}
+
+
+
+if(Zero >100)
+{
+ 
+ if(Zero > 280)
+     {
+       but = 0;
+     
+     Data[DataEntry] = '0'; 
+      if(NameCharCount % 2 == 0)
+        {
+          if(NameCharCount!=0)
+         lcd.print(',');lcd.print("0");
+        }
+        else
+        {
+        lcd.print("0");
+        }
+     
+     } 
+DataEntry++;
+NameCharCount++;
+ 
+ delay(250);
+  
+}
+
+}
+
+ 
+
+}//loop
+
+int getClass()
+{
+  
+  if(classSelect == 0)
+  {
+   FourBut = analogRead(4);
+  
+  
+     
+      if(clyes==0)
+      {
+        
+     lcd.setCursor(3, 0);
+      lcd.print("PLEASE SELECT");
+       lcd.setCursor(9, 1);
+       lcd.print("A");
+       lcd.setCursor(3, 2);
+      lcd.print("STUDENTS LIST");
+      lcd.setCursor(4,3);
+      for(int i = 4; i < 16;i++)
+      {
+        lcd.print(".");
+        lcd.setCursor(i,3);
+        delay(100);
+      }
+   lcd.clear();
+    clyes++;
+      }
+     if(clyes==1)
+    {
+       buttonState =  Choose(4);
+          
+      
+     if(ClassArrayLoop == 0)
+    { 
+     
+     while (ClassCh[ClassArray]!='\0')
+     { 
+       Class[ClassCharCount] = ClassCh[ClassArray];
+       ClassCharCount++;ClassArray++;
+       TotalChar++;
+       
+     } 
+     TotalChar=TotalChar+12;
+     ClassArrayLoop++;
+     TotalOp =  floor(TotalChar/InitClassCharCount);
+    Ch = 1;
+    }
+   
+   if (buttonState == 3) {     
+    if(Ch!=TotalOp)    
+    Ch++;  
+  }
+  if (buttonState == 2) {     
+    // turn LED on:
+   if(Ch!=1) 
+    Ch--;  
+  }
+   if (buttonState == 4) 
+   {     
+    ClassFinalCh = Ch;
+    clyes++;
+    
+   classSelect++;
+   lcd.clear();
+Data[DataEntry] = 'z';  //lcd.write(Data[DataEntry]);
+DataEntry++;
+    
+    lcd.setCursor(1,0);
+     int tmp = 8, cond;
+     cond = 12 * NewopLoop;
+     //lcd.clear();
+   
+     for(int t = 0; t <= tmp;t++)
+    {
+      Data[DataEntry] = Class[cond+1];
+      lcd.write(Data[DataEntry]);
+      cond++;DataEntry++;
+      
+    }
+      lcd.setCursor(2,1);
+      GetNumb = 1;
+    return ClassFinalCh;
+  }
+   
+      if(Ch <= TotalOp)
+    getOptions (Ch,TotalOp);
+   delay(200);
+         
+   
+    }
+  
+      
+
+    }
+    }//getClass
+    
+    
+    int getOptions(int opLoop, int Op)
+    {
+      NewopLoop = opLoop;
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Select:");
+     lcd.setCursor(5,1);
+     int tmp = 8, cond;
+     cond = 12 * opLoop;
+     lcd.print(Class[cond]);
+     lcd.setCursor(6,1);
+     lcd.print(".");
+     lcd.setCursor(7,1);
+     for(int t = 0; t <= tmp;t++)
+    {
+     lcd.write(Class[cond+1]);
+     cond++;
+    }
+     if(opLoop==1)
+     {
+       lcd.setCursor(19,3);
+       DrawDownArrow();
+     }
+     else if(opLoop==Op)
+     {
+       lcd.setCursor(19,2);
+       DrawUpArrow();
+     }
+     else
+     {
+       lcd.setCursor(19,2);
+       DrawUpArrow();
+       lcd.setCursor(19,3);
+       DrawDownArrow();
+     }
+    
+    }//getOptions
+    
+    
+    int Choose(int pin)
+{
+ if(pin == 4)
+  {
+    
+    
+       if(FourBut > 230 && FourBut < 300)
+     {
+       //up
+       but = 2;
+       return but;
+     }
+      else  if(FourBut > 180 && FourBut < 220)
+     {
+       //down
+       but = 3;
+       return but;
+     } 
+     else  if(FourBut > 300 && FourBut < 450)
+     {
+       //ch
+       but = 4;
+       return but;
+     } 
+  }
+}//choose
