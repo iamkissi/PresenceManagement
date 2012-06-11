@@ -1,0 +1,107 @@
+#include <SPI.h>
+#include <Ethernet.h>
+char incomingByte = 0, data[100]; int declare = 0, i=0, t=0;
+byte mac[] = { 0x90, 0xA2, 0xDA, 0x00, 0x2E, 0xDA };
+byte ip[] = { 169, 254, 100, 2 }; //assigned arduino LAN IP address
+byte server[] = { 169, 254, 100,21}; // laptop running apache LAN IP address
+byte gateway[] = { 192, 168, 1, 1 }; // internet access via router
+byte subnet[] = { 255, 255, 0, 0 }; //subnet mask
+char string[100] ="GET /create.php?value=";
+Client client(server, 80); //apache web server running on port 80
+
+void setup()
+{
+  Ethernet.begin( mac, ip);
+  Serial.begin(2400);
+  delay(1000);
+
+if (client.connect()) {
+    Serial.println("connected");
+     
+   
+  } else {
+    Serial.println("connection failed");
+  }
+ 
+}
+
+void loop()
+{
+  
+  if (Serial.available() > 0) {
+incomingByte = Serial.read();
+
+
+if(incomingByte == 'z')
+{
+  declare = 1;
+}
+if(incomingByte == 'x')
+{
+  declare = 0;t=1;
+}
+if(declare==1)
+{
+  if(incomingByte == ' ')
+  {
+    data[i] = '_';
+    i++;
+  }
+  else
+  {
+  data[i] = incomingByte;
+  Serial.print(data[i]);
+     i++;
+  }
+   
+}
+
+if(t==1)
+{
+if (client.connected()) {
+  
+  for(int l=22, j=0; l< 22+i; l++,j++)
+  {
+    string[l] = data[j];
+  }
+
+  
+   Serial.println("");
+    client.println(string);
+     client.print("");
+    client.println(" HTTP/1.0");
+   client.println("Host: http://169.254.25.246");
+    Serial.println("writing");
+   
+
+  client.print(data[i]);
+  delay(1000);
+  client.println(" HTTP/1.0");
+ client.write(data[3]);
+ client.stop();
+Serial.println(data[k]);
+delay(600);
+Serial.println(data);
+ string = "";
+  }
+
+
+t++;
+}
+
+  
+  }
+
+  if (!client.connected()) {
+    
+  Serial.println();
+    
+  Serial.println("disconnecting.");
+   Serial.println("==================================");
+  Serial.println("");
+  client.stop();
+  for(;;);
+  }
+}
+ 
+
