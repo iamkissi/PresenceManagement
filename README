@@ -1,0 +1,7 @@
+Reciever.txt
+
+- Contains code for recieving data via RF modules and send to the server
+
+Transmitter.txt
+
+- Contains code for collecting the attendance details and sent to the reciever via RF modules.
